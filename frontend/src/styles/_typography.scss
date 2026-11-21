@@ -1,0 +1,91 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Fluid type scale
+$text-xs: 0.75rem;
+$text-sm: 0.875rem;
+$text-base: 1rem;
+$text-lg: 1.125rem;
+$text-xl: 1.25rem;
+$h4: 1.25rem;
+$h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+$h2: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+$h1: clamp(2.25rem, 1.6rem + 2.8vw, 3.75rem);
+
+@mixin heading {
+  font-family: $font-display;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: inherit;
+  margin: 0;
+}
+
+@mixin eyebrow {
+  @include mono-numeric;
+  font-size: $text-xs;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@mixin body-lead {
+  font-size: $text-lg;
+  line-height: 1.65;
+  color: $color-text-muted;
+}
+
+@mixin type-base {
+  body {
+    font-family: $font-body;
+    font-size: $text-base;
+    line-height: 1.6;
+    color: $color-text;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @include heading;
+  }
+
+  h1 {
+    font-size: $h1;
+    font-weight: 600;
+  }
+
+  h2 {
+    font-size: $h2;
+  }
+
+  h3 {
+    font-size: $h3;
+  }
+
+  h4 {
+    font-size: $h4;
+  }
+
+  p {
+    margin: 0 0 $space-4;
+  }
+
+  code,
+  kbd,
+  .mono {
+    @include mono-numeric;
+  }
+
+  .eyebrow {
+    @include eyebrow;
+    color: $color-primary;
+  }
+
+  .lead {
+    @include body-lead;
+  }
+}

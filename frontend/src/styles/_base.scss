@@ -1,0 +1,113 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'mixins' as *;
+@use 'typography' as type;
+
+// --------------------------------------------------------------------------
+// Theme: override these custom properties to rebrand the whole site.
+// --------------------------------------------------------------------------
+:root {
+  --color-bg: #{map.get($palette, 'bg')};
+  --color-surface-soft: #{map.get($palette, 'surface-soft')};
+  --color-surface: #{map.get($palette, 'surface')};
+  --color-border: #{map.get($palette, 'border')};
+  --color-border-strong: #{map.get($palette, 'border-strong')};
+  --color-navy: #{map.get($palette, 'navy')};
+  --color-navy-2: #{map.get($palette, 'navy-2')};
+  --color-navy-line: #{map.get($palette, 'navy-line')};
+  --color-on-navy: #{map.get($palette, 'on-navy')};
+  --color-on-navy-muted: #{map.get($palette, 'on-navy-muted')};
+  --color-text: #{map.get($palette, 'text')};
+  --color-text-muted: #{map.get($palette, 'text-muted')};
+  --color-text-subtle: #{map.get($palette, 'text-subtle')};
+  --color-primary: #{map.get($palette, 'amber')};
+  --color-primary-hover: #{map.get($palette, 'amber-hover')};
+  --color-primary-soft: #{map.get($palette, 'amber-soft')};
+  --color-tech: #{map.get($palette, 'cobalt')};
+  --color-tech-soft: #{map.get($palette, 'cobalt-soft')};
+  --color-safe: #{map.get($palette, 'emerald')};
+  --color-safe-soft: #{map.get($palette, 'emerald-soft')};
+  --color-danger: #{map.get($palette, 'danger')};
+  --color-danger-soft: #{map.get($palette, 'danger-soft')};
+
+  --font-display: #{$font-stack-display};
+  --font-body: #{$font-stack-body};
+  --font-mono: #{$font-stack-mono};
+
+  color-scheme: light;
+}
+
+// --------------------------------------------------------------------------
+// Modern reset
+// --------------------------------------------------------------------------
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(#{$navbar-height} + #{$space-4});
+
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: $color-bg;
+  overflow-x: hidden;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: $color-tech;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+::selection {
+  background: $color-primary-soft;
+  color: $color-text;
+}
+
+@include type.type-base;

@@ -1,0 +1,108 @@
+// ==========================================================================
+// Design tokens – Precision Electrical Engineering
+// SCSS variables reference CSS custom properties so a client rebrand only
+// needs to override the `:root` values (see `_base.scss`).
+// ==========================================================================
+
+// --- Raw brand palette (single source for the :root defaults) -------------
+$palette: (
+  'bg': #f8fafc,
+  'surface-soft': #f1f5f9,
+  'surface': #ffffff,
+  'border': #e2e8f0,
+  'border-strong': #cbd5e1,
+  'navy': #0b1324,
+  'navy-2': #111c33,
+  'navy-line': #1e2a44,
+  'on-navy': #f8fafc,
+  'on-navy-muted': #94a3b8,
+  'text': #0f172a,
+  'text-muted': #475569,
+  'text-subtle': #64748b,
+  'amber': #d97706,
+  'amber-hover': #b45309,
+  'amber-soft': #fef3c7,
+  'cobalt': #1d4ed8,
+  'cobalt-soft': #dbeafe,
+  'emerald': #059669,
+  'emerald-soft': #d1fae5,
+  'danger': #b91c1c,
+  'danger-soft': #fee2e2,
+);
+
+// --- Semantic tokens (use these in components) ----------------------------
+$color-bg: var(--color-bg);
+$color-surface-soft: var(--color-surface-soft);
+$color-surface: var(--color-surface);
+$color-border: var(--color-border);
+$color-border-strong: var(--color-border-strong);
+$color-navy: var(--color-navy);
+$color-navy-2: var(--color-navy-2);
+$color-navy-line: var(--color-navy-line);
+$color-on-navy: var(--color-on-navy);
+$color-on-navy-muted: var(--color-on-navy-muted);
+$color-text: var(--color-text);
+$color-text-muted: var(--color-text-muted);
+$color-text-subtle: var(--color-text-subtle);
+$color-primary: var(--color-primary);
+$color-primary-hover: var(--color-primary-hover);
+$color-primary-soft: var(--color-primary-soft);
+$color-tech: var(--color-tech);
+$color-tech-soft: var(--color-tech-soft);
+$color-safe: var(--color-safe);
+$color-safe-soft: var(--color-safe-soft);
+$color-danger: var(--color-danger);
+$color-danger-soft: var(--color-danger-soft);
+
+// --- Typography ------------------------------------------------------------
+$font-display: var(--font-display);
+$font-body: var(--font-body);
+$font-mono: var(--font-mono);
+
+$font-stack-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+$font-stack-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+$font-stack-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+// --- Spacing scale (4px base) ---------------------------------------------
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+$space-5: 1.25rem;
+$space-6: 1.5rem;
+$space-8: 2rem;
+$space-10: 2.5rem;
+$space-12: 3rem;
+$space-16: 4rem;
+$space-20: 5rem;
+$space-24: 6rem;
+
+// --- Shape & elevation -----------------------------------------------------
+$radius-sm: 4px;
+$radius: 6px;
+$radius-lg: 10px;
+$radius-pill: 999px;
+
+$border-hairline: 1px solid $color-border;
+
+$shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+$shadow-md: 0 6px 18px -6px rgba(15, 23, 42, 0.12), 0 2px 4px rgba(15, 23, 42, 0.04);
+$shadow-lg: 0 20px 40px -16px rgba(15, 23, 42, 0.22);
+
+// --- Motion ----------------------------------------------------------------
+$ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+$transition-fast: 150ms $ease;
+$transition: 220ms $ease;
+
+// --- Layout ----------------------------------------------------------------
+$container-max: 1240px;
+$container-gutter: 1rem;
+$container-gutter-lg: 2rem;
+$navbar-height: 72px;
+
+$breakpoints: (
+  'sm': 576px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+);

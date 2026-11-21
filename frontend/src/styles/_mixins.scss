@@ -1,0 +1,94 @@
+@use 'sass:map';
+@use 'variables' as *;
+
+// Mobile-first media query: @include up(md) { ... }
+@mixin up($bp) {
+  @media (min-width: map.get($breakpoints, $bp)) {
+    @content;
+  }
+}
+
+@mixin down($bp) {
+  @media (max-width: (map.get($breakpoints, $bp) - 0.02px)) {
+    @content;
+  }
+}
+
+@mixin container {
+  width: 100%;
+  max-width: $container-max;
+  margin-inline: auto;
+  padding-inline: $container-gutter;
+
+  @include up(lg) {
+    padding-inline: $container-gutter-lg;
+  }
+}
+
+// Hairline-bordered white panel – the core architectural surface.
+@mixin panel($padding: $space-6) {
+  background: $color-surface;
+  border: $border-hairline;
+  border-radius: $radius;
+  padding: $padding;
+}
+
+// Subtle hover lift used by cards.
+@mixin hover-lift {
+  transition:
+    transform $transition,
+    box-shadow $transition,
+    border-color $transition;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+    border-color: $color-border-strong;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+@mixin focus-ring($color: $color-tech) {
+  outline: 2px solid $color;
+  outline-offset: 2px;
+}
+
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin mono-numeric {
+  font-family: $font-mono;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+// Technical blueprint grid backdrop for dark bands.
+@mixin blueprint-grid($line: rgba(148, 163, 184, 0.08), $size: 48px) {
+  background-image:
+    linear-gradient($line 1px, transparent 1px),
+    linear-gradient(90deg, $line 1px, transparent 1px);
+  background-size: $size $size;
+}
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
