@@ -1,0 +1,108 @@
+<section class="page-hero">
+  <div class="container">
+    <ol class="breadcrumb">
+      <li><a routerLink="/">Úvod</a></li>
+      <li aria-current="page">Služby</li>
+    </ol>
+    <span class="eyebrow">Služby · Electrical Solutions</span>
+    <h1>Elektroinštalácie, revízie a inteligentné riešenia pre každý typ objektu</h1>
+    <p>
+      Kompletný katalóg našich služieb – od domových rozvodov cez priemyselné rozvádzače až po revízie, bleskozvody,
+      Loxone / KNX a nabíjacie stanice. Pri každej službe nájdete rozsah prác, platné normy a orientačnú cenu.
+    </p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="toolbar">
+      <div class="toolbar__search">
+        <label class="visually-hidden" for="service-search">Hľadať službu alebo normu</label>
+        <app-icon name="search" [size]="18" />
+        <input
+          id="service-search"
+          class="input"
+          type="search"
+          placeholder="Hľadať službu alebo normu (napr. wallbox, 62305)…"
+          autocomplete="off"
+          [value]="searchText()"
+          (input)="onSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__sort">
+        <label class="visually-hidden" for="service-sort">Zoradiť</label>
+        <select id="service-sort" class="select" (change)="setSort($any($event.target).value)">
+          @for (opt of sortOptions; track opt.value) {
+            <option [value]="opt.value" [selected]="(zoradit() ?? '') === opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="chip-group filters" role="group" aria-label="Filtrovať podľa kategórie">
+      <button type="button" class="chip" [class.is-active]="!kategoria()" [attr.aria-pressed]="!kategoria()" (click)="setCategory(null)">
+        Všetky <span class="count">{{ totalCount() }}</span>
+      </button>
+      @for (cat of categories(); track cat.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.is-active]="kategoria() === cat.slug"
+          [attr.aria-pressed]="kategoria() === cat.slug"
+          (click)="setCategory(cat.slug)"
+        >
+          <app-icon [name]="cat.icon_name" [size]="16" />
+          {{ cat.name }} <span class="count">{{ cat.service_count }}</span>
+        </button>
+      }
+    </div>
+
+    @if (activeCategory(); as cat) {
+      <div class="category-intro">
+        <app-icon [name]="cat.icon_name" [size]="24" />
+        <div>
+          <h2>{{ cat.name }}</h2>
+          <p>{{ cat.short_summary }}</p>
+        </div>
+      </div>
+    }
+
+    <p class="results-count" aria-live="polite">
+      @if (!servicesRes.isLoading()) {
+        Nájdené služby: <strong class="mono">{{ services().length }}</strong>
+      }
+    </p>
+
+    @if (servicesRes.isLoading() && !services().length) {
+      <div class="grid-cards">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <div class="skeleton skeleton--card"></div>
+        }
+      </div>
+    } @else if (servicesRes.error()) {
+      <div class="state-box">
+        <h3>Služby sa nepodarilo načítať</h3>
+        <p>Server je dočasne nedostupný. Skúste to, prosím, znova.</p>
+        <button type="button" class="btn btn--secondary" (click)="servicesRes.reload()">Skúsiť znova</button>
+      </div>
+    } @else if (!services().length) {
+      <div class="state-box">
+        <h3>Nenašli sme žiadnu službu</h3>
+        <p>Skúste upraviť hľadaný výraz alebo zrušiť filter. Prípadne nám napíšte – radi poradíme.</p>
+        <button type="button" class="btn btn--secondary" (click)="resetFilters()">Zrušiť filtre</button>
+      </div>
+    } @else {
+      <div class="grid-cards" [class.is-refreshing]="servicesRes.isLoading()">
+        @for (service of services(); track service.id) {
+          <app-service-card [service]="service" />
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<app-cta-band
+  eyebrow="Neviete si vybrať?"
+  title="Popíšte nám objekt a navrhneme vhodné riešenie"
+  text="Technik posúdi vaše požiadavky, odporučí rozsah prác a pripraví nezáväznú cenovú ponuku."
+/>

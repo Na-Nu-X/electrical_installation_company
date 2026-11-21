@@ -1,0 +1,169 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+@use 'styles/typography' as type;
+
+.page-hero .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.skeleton--hero {
+  height: 180px;
+  opacity: 0.08;
+}
+
+.dossier {
+  display: grid;
+  gap: $space-10;
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: $space-12;
+  }
+
+  &__aside {
+    @include up(lg) {
+      position: sticky;
+      top: calc(#{$navbar-height} + #{$space-6});
+    }
+  }
+}
+
+.block {
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    margin-bottom: $space-5;
+    font-size: type.$h3;
+
+    &::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      border: 2px solid $color-primary;
+      border-radius: 2px;
+    }
+  }
+
+  &__lead {
+    font-size: type.$text-lg;
+    line-height: 1.75;
+    color: $color-text-muted;
+    margin: 0;
+  }
+
+  &__text {
+    color: $color-text-muted;
+  }
+}
+
+.steps {
+  list-style: none;
+  border: 1px solid $color-border;
+  border-radius: $radius;
+  background: $color-surface;
+  counter-reset: step;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+    padding: $space-4 $space-5;
+
+    & + & {
+      border-top: 1px solid $color-border;
+    }
+  }
+
+  &__num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 32px;
+    border-radius: $radius-sm;
+    background: $color-navy;
+    color: $color-on-navy;
+    font-size: type.$text-xs;
+  }
+
+  &__text {
+    font-weight: 500;
+  }
+}
+
+.standards {
+  display: grid;
+  gap: $space-3;
+  list-style: none;
+
+  @include up(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-2;
+    padding: $space-4;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    background: $color-surface;
+    font-size: type.$text-sm;
+    color: $color-text-muted;
+  }
+}
+
+.facts {
+  @include panel($space-6);
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  border-top: 3px solid $color-primary;
+
+  dl {
+    margin: 0 0 $space-3;
+  }
+
+  &__row {
+    padding-block: $space-3;
+    border-bottom: 1px solid $color-border;
+
+    dt {
+      display: flex;
+      align-items: center;
+      gap: $space-2;
+      font-size: type.$text-xs;
+      color: $color-text-subtle;
+      margin-bottom: $space-1;
+
+      app-icon {
+        color: $color-tech;
+      }
+    }
+
+    dd {
+      margin: 0;
+      font-weight: 600;
+    }
+  }
+
+  &__price {
+    font-size: type.$text-xl;
+  }
+
+  &__note {
+    margin: 0;
+    font-size: type.$text-xs;
+    color: $color-text-subtle;
+  }
+}

@@ -1,0 +1,83 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+@use 'styles/typography' as type;
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  margin-bottom: $space-5;
+
+  @include up(md) {
+    flex-direction: row;
+  }
+
+  &__search {
+    position: relative;
+    flex: 1;
+
+    app-icon {
+      position: absolute;
+      top: 50%;
+      left: $space-4;
+      transform: translateY(-50%);
+      color: $color-text-subtle;
+      pointer-events: none;
+    }
+
+    .input {
+      padding-left: $space-10 + $space-1;
+    }
+  }
+
+  &__sort {
+    @include up(md) {
+      width: 260px;
+    }
+  }
+}
+
+.filters {
+  margin-bottom: $space-8;
+}
+
+.category-intro {
+  display: flex;
+  gap: $space-4;
+  margin-bottom: $space-6;
+  padding: $space-5 $space-6;
+  border: 1px solid $color-border;
+  border-left: 3px solid $color-primary;
+  border-radius: $radius-sm;
+  background: $color-surface;
+
+  app-icon {
+    color: $color-primary;
+  }
+
+  h2 {
+    font-size: type.$text-lg;
+    margin-bottom: $space-1;
+  }
+
+  p {
+    margin: 0;
+    font-size: type.$text-sm;
+    color: $color-text-muted;
+  }
+}
+
+.results-count {
+  min-height: 1.5em;
+  font-size: type.$text-sm;
+  color: $color-text-muted;
+}
+
+.skeleton--card {
+  height: 440px;
+}
+
+.is-refreshing {
+  opacity: 0.6;
+  transition: opacity $transition;
+}

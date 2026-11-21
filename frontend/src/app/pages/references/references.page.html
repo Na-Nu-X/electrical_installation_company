@@ -1,0 +1,75 @@
+<section class="page-hero">
+  <div class="container">
+    <ol class="breadcrumb">
+      <li><a routerLink="/">Úvod</a></li>
+      <li aria-current="page">Realizácie</li>
+    </ol>
+    <span class="eyebrow">Referencie a realizácie · Portfolio</span>
+    <h1>Dokončené elektroinštalácie, rekonštrukcie HDV a revízie</h1>
+    <p>
+      Výber z realizácií pre rodinné domy, spoločenstvá vlastníkov bytov aj priemyselných klientov. Každá zákazka
+      bola odovzdaná s kompletnou dokumentáciou a revíznou správou.
+    </p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="filters">
+      <div class="chip-group" role="group" aria-label="Filtrovať podľa typu klienta">
+        @for (f of clientFilters; track f.label) {
+          <button
+            type="button"
+            class="chip"
+            [class.is-active]="clientType() === f.value"
+            [attr.aria-pressed]="clientType() === f.value"
+            (click)="setClient(f.value)"
+          >
+            <app-icon [name]="f.icon" [size]="16" /> {{ f.label }}
+          </button>
+        }
+      </div>
+      <div class="filters__category">
+        <label class="visually-hidden" for="ref-category">Kategória</label>
+        <select id="ref-category" class="select" (change)="setCategory($any($event.target).value)">
+          <option value="" [selected]="!kategoria()">Všetky kategórie</option>
+          @for (c of categories(); track c.id) {
+            <option [value]="c.slug" [selected]="kategoria() === c.slug">{{ c.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    @if (referencesRes.isLoading() && !references().length) {
+      <div class="grid-cards">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="skeleton skeleton--card"></div>
+        }
+      </div>
+    } @else if (referencesRes.error()) {
+      <div class="state-box">
+        <h3>Realizácie sa nepodarilo načítať</h3>
+        <p>Server je dočasne nedostupný. Skúste to, prosím, znova.</p>
+        <button type="button" class="btn btn--secondary" (click)="referencesRes.reload()">Skúsiť znova</button>
+      </div>
+    } @else if (!references().length) {
+      <div class="state-box">
+        <h3>V tejto kombinácii zatiaľ nemáme zverejnenú realizáciu</h3>
+        <p>Referencie z ďalších projektov vám radi pošleme na vyžiadanie.</p>
+        <button type="button" class="btn btn--secondary" (click)="resetFilters()">Zobraziť všetky</button>
+      </div>
+    } @else {
+      <div class="grid-cards">
+        @for (project of references(); track project.id) {
+          <app-reference-card [project]="project" [detailed]="true" />
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<app-cta-band
+  eyebrow="Váš projekt môže byť ďalší"
+  title="Pripravíme riešenie na mieru vášmu objektu"
+  text="Rodinný dom, bytový dom alebo výrobná hala – navrhneme, zrealizujeme a zdokumentujeme elektroinštaláciu podľa platných noriem."
+/>

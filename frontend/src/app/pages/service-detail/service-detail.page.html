@@ -1,0 +1,142 @@
+@if (service(); as s) {
+  <section class="page-hero">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li><a routerLink="/">Úvod</a></li>
+        <li><a routerLink="/sluzby">Služby</a></li>
+        <li><a routerLink="/sluzby" [queryParams]="{ kategoria: s.category.slug }">{{ s.category.name }}</a></li>
+      </ol>
+      <span class="eyebrow"><app-icon [name]="s.category.icon_name" [size]="14" /> {{ s.category.name }}</span>
+      <h1>{{ s.name }}</h1>
+      <p>{{ s.short_description }}</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container dossier">
+      <div class="dossier__main">
+        @if (s.detailed_description) {
+          <div class="block">
+            <h2 class="block__title">O službe</h2>
+            <p class="block__lead">{{ s.detailed_description }}</p>
+          </div>
+        }
+
+        <div class="block">
+          <h2 class="block__title">Čo všetko služba zahŕňa</h2>
+          <ol class="steps">
+            @for (step of s.scope_of_work; track step; let i = $index) {
+              <li class="steps__item">
+                <span class="steps__num mono">{{ (i + 1).toString().padStart(2, '0') }}</span>
+                <span class="steps__text">{{ step }}</span>
+              </li>
+            }
+          </ol>
+        </div>
+
+        <div class="block">
+          <h2 class="block__title">Technické normy a bezpečnosť</h2>
+          <p class="block__text">
+            Každú realizáciu vykonávame a dokumentujeme v súlade s platnými slovenskými technickými normami a predpismi
+            BOZP. Súlad potvrdzuje revízna správa vystavená revíznym technikom s osvedčením podľa § 24.
+          </p>
+          <ul class="standards">
+            @for (std of standards(); track std.code) {
+              <li>
+                <span class="pill" [class.pill--tech]="std.code.startsWith('STN')" [class.pill--safe]="!std.code.startsWith('STN')">
+                  {{ std.code }}
+                </span>
+                <span>{{ std.note }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+
+        @if (s.faq.length) {
+          <div class="block">
+            <h2 class="block__title">Časté otázky</h2>
+            <app-faq-accordion [items]="s.faq" />
+          </div>
+        }
+      </div>
+
+      <aside class="dossier__aside">
+        <div class="facts">
+          <dl>
+            <div class="facts__row">
+              <dt><app-icon name="gauge" [size]="16" /> Orientačná cena</dt>
+              <dd class="mono facts__price">
+                @if (s.starting_price_eur) {
+                  od {{ s.starting_price_eur | eur }}
+                } @else {
+                  individuálne
+                }
+              </dd>
+            </div>
+            <div class="facts__row">
+              <dt><app-icon name="clock" [size]="16" /> Orientačný čas realizácie</dt>
+              <dd class="mono">{{ s.typical_timeline || 'podľa rozsahu' }}</dd>
+            </div>
+            <div class="facts__row">
+              <dt><app-icon name="file-text" [size]="16" /> Dokumentácia</dt>
+              <dd>Revízna správa v cene</dd>
+            </div>
+            <div class="facts__row">
+              <dt><app-icon name="award" [size]="16" /> Záruka</dt>
+              <dd class="mono">60 mesiacov</dd>
+            </div>
+          </dl>
+          <a class="btn btn--primary btn--lg btn--block" routerLink="/dopyt" [queryParams]="quoteParams()">
+            Požiadať o nacenenie tejto služby
+          </a>
+          <a class="btn btn--secondary btn--block" routerLink="/kalkulacka">
+            <app-icon name="gauge" [size]="16" /> Vypočítať orientačnú cenu
+          </a>
+          <p class="facts__note">Ceny sú orientačné, s DPH. Presnú ponuku pripravíme po obhliadke zdarma.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  @if (related().length) {
+    <section class="section section--soft section--tight">
+      <div class="container">
+        <header class="section-header">
+          <span class="eyebrow">Súvisiace služby</span>
+          <h2>Ďalšie služby v kategórii {{ s.category.name }}</h2>
+        </header>
+        <div class="grid-cards">
+          @for (r of related(); track r.id) {
+            <app-service-card [service]="r" />
+          }
+        </div>
+      </div>
+    </section>
+  }
+} @else if (notFound()) {
+  <section class="section">
+    <div class="container">
+      <div class="state-box">
+        <h3>Služba nebola nájdená</h3>
+        <p>Odkaz je pravdepodobne neplatný alebo služba už nie je v ponuke.</p>
+        <a class="btn btn--primary" routerLink="/sluzby">Prehľad služieb</a>
+      </div>
+    </div>
+  </section>
+} @else if (serviceRes.error()) {
+  <section class="section">
+    <div class="container">
+      <div class="state-box">
+        <h3>Detail služby sa nepodarilo načítať</h3>
+        <p>Server je dočasne nedostupný. Skúste to, prosím, znova.</p>
+        <button type="button" class="btn btn--secondary" (click)="serviceRes.reload()">Skúsiť znova</button>
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="page-hero" aria-busy="true">
+    <div class="container">
+      <div class="skeleton skeleton--hero"></div>
+    </div>
+  </section>
+}

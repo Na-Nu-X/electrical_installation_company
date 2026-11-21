@@ -1,0 +1,322 @@
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <ol class="breadcrumb">
+      <li><a routerLink="/">Úvod</a></li>
+      <li aria-current="page">Nezáväzná ponuka</li>
+    </ol>
+    <span class="eyebrow">Cenová ponuka · Revízia · Poruchová služba</span>
+    <h1>Nezáväzná cenová ponuka a hlásenie poruchy</h1>
+    <p>
+      Vyplňte základné údaje o objekte. Technik sa vám ozve do 1 pracovného dňa, pri akútnej poruche čo najskôr.
+      Obhliadka v regióne {{ config.serviceRegion.primary }} je zdarma.
+    </p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container layout">
+    <div class="layout__main">
+      @if (state() === 'success' && result(); as r) {
+        <div class="success" role="status">
+          <span class="success__icon"><app-icon name="check" [size]="28" [strokeWidth]="2.25" /></span>
+          <h2>Ďakujeme, dopyt sme prijali</h2>
+          <p>
+            Evidenčné číslo dopytu <strong class="mono">#{{ r.id.toString().padStart(5, '0') }}</strong>.
+            Potvrdenie a ďalší postup pošleme na <strong>{{ r.email }}</strong>.
+          </p>
+          <dl class="success__summary">
+            <div><dt>Požiadavka</dt><dd>{{ labelForType(r.service_type) }}</dd></div>
+            <div><dt>Lokalita</dt><dd>{{ r.property_location }}</dd></div>
+            @if (r.floor_area_sqm) {
+              <div><dt>Plocha</dt><dd class="mono">{{ r.floor_area_sqm }} m²</dd></div>
+            }
+          </dl>
+          @if (r.service_type === 'porucha') {
+            <div class="alert alert--danger">
+              <app-icon name="alert" [size]="20" />
+              <p>
+                Pri akútnej poruche, zápachu spáleniny alebo iskrení nečakajte na e-mail a volajte poruchovú službu:
+                <a class="mono" [href]="config.contact.emergencyPhoneHref">{{ config.contact.emergencyPhone }}</a>
+              </p>
+            </div>
+          }
+          <div class="success__actions">
+            <a class="btn btn--primary" routerLink="/">Späť na úvod</a>
+            <button type="button" class="btn btn--secondary" (click)="reset()">Odoslať ďalší dopyt</button>
+          </div>
+        </div>
+      } @else {
+        <form class="quote-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <!-- Service type -->
+          <fieldset class="group">
+            <legend class="group__title"><span class="mono">01</span> Čo potrebujete?</legend>
+            <div class="type-grid">
+              @for (opt of serviceTypes; track opt.value) {
+                <label
+                  class="type-tile"
+                  [class.is-active]="selectedType() === opt.value"
+                  [class.type-tile--danger]="opt.value === 'porucha'"
+                >
+                  <input type="radio" class="visually-hidden" formControlName="service_type" [value]="opt.value" />
+                  <app-icon [name]="opt.icon ?? 'bolt'" [size]="22" />
+                  <span>
+                    <strong>{{ opt.label }}</strong>
+                    <small>{{ opt.hint }}</small>
+                  </span>
+                </label>
+              }
+            </div>
+            @if (isFault()) {
+              <div class="alert alert--danger" role="alert">
+                <app-icon name="alert" [size]="20" />
+                <p>
+                  <strong>Akútna porucha alebo výpadok prúdu?</strong> Pre najrýchlejší výjazd volajte
+                  {{ config.contact.emergencyLabel.toLowerCase() }}:
+                  <a class="mono" [href]="config.contact.emergencyPhoneHref">{{ config.contact.emergencyPhone }}</a>.
+                  Pri zápachu spáleniny alebo iskrení vypnite hlavný istič.
+                </p>
+              </div>
+            }
+          </fieldset>
+
+          <!-- Object -->
+          <fieldset class="group">
+            <legend class="group__title"><span class="mono">02</span> Objekt</legend>
+            <div class="grid-2">
+              <div class="field">
+                <label class="field__label" for="q-object">Typ objektu</label>
+                <select id="q-object" class="select" formControlName="object_type">
+                  @for (o of objectTypes; track o.value) {
+                    <option [value]="o.value">{{ o.label }}</option>
+                  }
+                </select>
+              </div>
+              <div class="field">
+                <label class="field__label" for="q-location">Lokalita objektu</label>
+                <input
+                  id="q-location"
+                  class="input"
+                  formControlName="property_location"
+                  placeholder="Obec, ulica"
+                  autocomplete="address-level2"
+                  [class.is-invalid]="errorFor('property_location')"
+                  [attr.aria-invalid]="!!errorFor('property_location')"
+                  aria-describedby="q-location-err"
+                />
+                @if (errorFor('property_location'); as err) {
+                  <span class="field__error" id="q-location-err">{{ err }}</span>
+                }
+              </div>
+              <div class="field">
+                <label class="field__label" for="q-area">
+                  Podlahová plocha (m²)
+                  @if (!areaRequired()) {
+                    <span class="optional">– nepovinné</span>
+                  }
+                </label>
+                <input
+                  id="q-area"
+                  class="input mono"
+                  type="number"
+                  inputmode="numeric"
+                  min="1"
+                  formControlName="floor_area_sqm"
+                  placeholder="napr. 140"
+                  [class.is-invalid]="errorFor('floor_area_sqm')"
+                  [attr.aria-invalid]="!!errorFor('floor_area_sqm')"
+                  aria-describedby="q-area-err"
+                />
+                @if (errorFor('floor_area_sqm'); as err) {
+                  <span class="field__error" id="q-area-err">{{ err }}</span>
+                }
+              </div>
+              <div class="field">
+                <label class="field__label" for="q-timeframe">Preferovaný termín <span class="optional">– nepovinné</span></label>
+                <select id="q-timeframe" class="select" formControlName="preferred_timeframe">
+                  <option value="">Vyberte termín</option>
+                  @for (t of timeframes; track t) {
+                    <option [value]="t">{{ t }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            <label class="checkbox doc-check">
+              <input type="checkbox" formControlName="has_project_documentation" />
+              <span>
+                <strong>Mám projektovú dokumentáciu elektroinštalácie</strong>
+                (urýchli presné nacenenie – pošlete ju po kontakte technika)
+              </span>
+            </label>
+          </fieldset>
+
+          <!-- Contact -->
+          <fieldset class="group">
+            <legend class="group__title"><span class="mono">03</span> Kontaktné údaje</legend>
+            <div class="grid-2">
+              <div class="field field--full">
+                <label class="field__label" for="q-name">Meno a priezvisko / firma</label>
+                <input
+                  id="q-name"
+                  class="input"
+                  formControlName="client_name"
+                  autocomplete="name"
+                  [class.is-invalid]="errorFor('client_name')"
+                  [attr.aria-invalid]="!!errorFor('client_name')"
+                  aria-describedby="q-name-err"
+                />
+                @if (errorFor('client_name'); as err) {
+                  <span class="field__error" id="q-name-err">{{ err }}</span>
+                }
+              </div>
+              <div class="field">
+                <label class="field__label" for="q-email">E-mail</label>
+                <input
+                  id="q-email"
+                  class="input"
+                  type="email"
+                  formControlName="email"
+                  autocomplete="email"
+                  [class.is-invalid]="errorFor('email')"
+                  [attr.aria-invalid]="!!errorFor('email')"
+                  aria-describedby="q-email-err"
+                />
+                @if (errorFor('email'); as err) {
+                  <span class="field__error" id="q-email-err">{{ err }}</span>
+                }
+              </div>
+              <div class="field">
+                <label class="field__label" for="q-phone">Telefón</label>
+                <input
+                  id="q-phone"
+                  class="input mono"
+                  type="tel"
+                  formControlName="phone"
+                  autocomplete="tel"
+                  placeholder="+421 900 123 456"
+                  [class.is-invalid]="errorFor('phone')"
+                  [attr.aria-invalid]="!!errorFor('phone')"
+                  aria-describedby="q-phone-err"
+                />
+                @if (errorFor('phone'); as err) {
+                  <span class="field__error" id="q-phone-err">{{ err }}</span>
+                }
+              </div>
+              <div class="field field--full">
+                <label class="field__label" for="q-desc">
+                  {{ isFault() ? 'Popis poruchy' : 'Popis požiadavky' }}
+                  @if (!isFault()) {
+                    <span class="optional">– nepovinné</span>
+                  }
+                </label>
+                <textarea
+                  id="q-desc"
+                  class="textarea"
+                  formControlName="description"
+                  [placeholder]="
+                    isFault()
+                      ? 'Čo sa stalo? Napr. vypína hlavný istič, nefunguje časť okruhov, zápach spáleniny…'
+                      : 'Rozsah prác, požiadavky na zásuvky, osvetlenie, smart home, wallbox…'
+                  "
+                  [class.is-invalid]="errorFor('description')"
+                  [attr.aria-invalid]="!!errorFor('description')"
+                  aria-describedby="q-desc-err"
+                ></textarea>
+                @if (errorFor('description'); as err) {
+                  <span class="field__error" id="q-desc-err">{{ err }}</span>
+                }
+              </div>
+            </div>
+
+            <!-- Honeypot: hidden from users and assistive tech -->
+            <div class="hp" aria-hidden="true">
+              <label for="q-website">Web</label>
+              <input id="q-website" type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <label class="checkbox" [class.is-invalid-check]="errorFor('gdpr_consent')">
+              <input type="checkbox" formControlName="gdpr_consent" [attr.aria-invalid]="!!errorFor('gdpr_consent')" />
+              <span>
+                Súhlasím so spracovaním osobných údajov na účel vybavenia dopytu v súlade s GDPR a zákonom č. 18/2018 Z. z.
+              </span>
+            </label>
+            @if (errorFor('gdpr_consent'); as err) {
+              <span class="field__error">{{ err }}</span>
+            }
+          </fieldset>
+
+          @if (generalError(); as msg) {
+            <div class="alert alert--danger" role="alert">
+              <app-icon name="alert" [size]="20" />
+              <p>{{ msg }}</p>
+            </div>
+          }
+
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn btn--lg"
+              [class.btn--primary]="!isFault()"
+              [class.btn--danger]="isFault()"
+              [disabled]="state() === 'submitting'"
+            >
+              @if (state() === 'submitting') {
+                <span class="spinner" aria-hidden="true"></span> Odosielam…
+              } @else {
+                {{ isFault() ? 'Nahlásiť poruchu' : 'Odoslať nezáväzný dopyt' }}
+                <app-icon name="arrow-right" [size]="18" />
+              }
+            </button>
+            <p class="form-actions__note">Odoslanie je nezáväzné a bezplatné.</p>
+          </div>
+        </form>
+      }
+    </div>
+
+    <aside class="layout__aside">
+      <a class="emergency" [href]="config.contact.emergencyPhoneHref">
+        <span class="emergency__label"><span class="dot" aria-hidden="true"></span> {{ config.contact.emergencyLabel }}</span>
+        <strong class="mono">{{ config.contact.emergencyPhone }}</strong>
+        <span class="emergency__text">Výpadok prúdu, vypínajúci istič, iskrenie či zápach spáleniny</span>
+      </a>
+
+      <div class="info">
+        <h2>Kontakt</h2>
+        <ul>
+          <li>
+            <app-icon name="phone" [size]="18" />
+            <div><span>Kancelária</span><a class="mono" [href]="config.contact.phoneHref">{{ config.contact.phone }}</a></div>
+          </li>
+          <li>
+            <app-icon name="mail" [size]="18" />
+            <div><span>E-mail</span><a [href]="'mailto:' + config.contact.email">{{ config.contact.email }}</a></div>
+          </li>
+          <li>
+            <app-icon name="map-pin" [size]="18" />
+            <div>
+              <span>Sídlo</span>
+              {{ config.address.street }}, {{ config.address.postalCode }} {{ config.address.city }}
+            </div>
+          </li>
+          <li>
+            <app-icon name="clock" [size]="18" />
+            <div><span>Úradné hodiny</span>{{ config.contact.openingHours }}</div>
+          </li>
+        </ul>
+        <div class="info__region">
+          <span>Pôsobíme</span>
+          <p>{{ config.serviceRegion.primary }}</p>
+          <p class="muted">{{ config.serviceRegion.secondary }}</p>
+        </div>
+      </div>
+
+      <div class="info">
+        <h2>Čo bude nasledovať</h2>
+        <ol class="next">
+          <li><span class="mono">01</span> Technik vás kontaktuje do 1 pracovného dňa.</li>
+          <li><span class="mono">02</span> Dohodneme bezplatnú obhliadku alebo posúdime projekt.</li>
+          <li><span class="mono">03</span> Dostanete rozpočet s rozpisom materiálu a prác.</li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+</section>

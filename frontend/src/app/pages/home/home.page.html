@@ -1,0 +1,225 @@
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__content">
+      <span class="eyebrow">{{ config.authorization.authority }} · {{ config.authorization.regulation }}</span>
+      <h1>Elektroinštalácie, revízie a bleskozvody s <span class="accent">certifikovanou presnosťou</span></h1>
+      <p class="hero__lead">
+        Navrhujeme, montujeme a revidujeme silnoprúdové a slaboprúdové rozvody pre rodinné domy, bytové domy aj
+        priemysel. Inteligentné elektroinštalácie Loxone / KNX a nabíjacie stanice pre elektromobily na kľúč.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--lg" routerLink="/dopyt">Nezáväzná ponuka <app-icon name="arrow-right" [size]="18" /></a>
+        <a class="btn btn--ghost-light btn--lg" routerLink="/kalkulacka">
+          <app-icon name="gauge" [size]="18" /> Orientačná kalkulačka ceny
+        </a>
+      </div>
+      <ul class="hero__badges">
+        @for (badge of config.qualificationBadges; track badge.label) {
+          <li class="badge" [attr.data-tone]="badge.tone">
+            <app-icon [name]="badge.icon" [size]="18" />
+            <span>
+              <strong>{{ badge.label }}</strong>
+              <small class="mono">{{ badge.detail }}</small>
+            </span>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="hero__visual" aria-hidden="true">
+      <div class="hero__image">
+        <img
+          src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1200&q=80"
+          alt=""
+          width="1200"
+          height="1400"
+          fetchpriority="high"
+        />
+      </div>
+      <div class="spec-sheet">
+        <div class="spec-sheet__head">
+          <span class="mono">RD-2026 / RH1</span>
+          <span class="pill pill--safe">Revízia OK</span>
+        </div>
+        <dl>
+          @for (spec of heroSpecs; track spec.label) {
+            <div>
+              <dt>{{ spec.label }}</dt>
+              <dd class="mono">{{ spec.value }}</dd>
+            </div>
+          }
+        </dl>
+        <p class="spec-sheet__foot mono">STN 33 2000-6 · STN EN 62305</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="container">
+      <ul class="metrics__list">
+        @for (m of config.trustMetrics; track m.label) {
+          <li>
+            <strong class="mono">{{ m.value }}</strong>
+            <span>{{ m.label }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section">
+  <div class="container">
+    <header class="section-header section-header--split">
+      <div>
+        <span class="eyebrow">Služby</span>
+        <h2>Naše elektroinštalačné služby</h2>
+        <p>Od prvého kábla v novostavbe po pravidelnú revíziu bytového domu – všetko s dokumentáciou podľa platných STN.</p>
+      </div>
+      <a class="btn btn--secondary" routerLink="/sluzby">Všetky služby <app-icon name="arrow-right" [size]="16" /></a>
+    </header>
+
+    @if (servicesRes.isLoading() && !services().length) {
+      <div class="grid-cards">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="skeleton skeleton--card"></div>
+        }
+      </div>
+    } @else if (servicesRes.error()) {
+      <div class="state-box">
+        <h3>Služby sa nepodarilo načítať</h3>
+        <p>Skontrolujte pripojenie alebo to skúste znova o chvíľu.</p>
+        <button type="button" class="btn btn--secondary" (click)="servicesRes.reload()">Skúsiť znova</button>
+      </div>
+    } @else {
+      <div class="grid-cards">
+        @for (service of services(); track service.id) {
+          <app-service-card [service]="service" />
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ESTIMATOR -->
+<section class="section section--soft" id="kalkulacka">
+  <div class="container">
+    <header class="section-header">
+      <span class="eyebrow">Kalkulačka ceny</span>
+      <h2>Koľko bude stáť vaša elektroinštalácia?</h2>
+      <p>
+        Nastavte typ realizácie, objekt a požiadavky. Orientačnú investíciu, dĺžku realizácie aj povinnú dokumentáciu
+        uvidíte okamžite.
+      </p>
+    </header>
+    <app-electrical-cost-estimator idPrefix="home-est" />
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section">
+  <div class="container">
+    <header class="section-header">
+      <span class="eyebrow">Prečo my</span>
+      <h2>Prečo si vybrať našu firmu</h2>
+      <p>Elektroinštalácia je vyhradené technické zariadenie. Rozhoduje odbornosť, materiál a dokumentácia – nie len cena.</p>
+    </header>
+    <ul class="pillars">
+      @for (p of pillars; track p.title; let i = $index) {
+        <li class="pillar">
+          <span class="pillar__index mono">0{{ i + 1 }}</span>
+          <app-icon [name]="p.icon" [size]="28" />
+          <h3>{{ p.title }}</h3>
+          <p>{{ p.text }}</p>
+          <span class="pill pill--tech">{{ p.spec }}</span>
+        </li>
+      }
+    </ul>
+    <div class="brands">
+      <span class="brands__label mono">Pracujeme s materiálom</span>
+      <ul>
+        @for (brand of config.partners.materialBrands; track brand) {
+          <li>{{ brand }}</li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- REFERENCES -->
+<section class="section section--soft">
+  <div class="container">
+    <header class="section-header section-header--split">
+      <div>
+        <span class="eyebrow">Referencie</span>
+        <h2>Vybrané realizácie</h2>
+        <p>Rodinné domy, bytové domy aj priemyselné objekty po celom Slovensku.</p>
+      </div>
+      <a class="btn btn--secondary" routerLink="/realizacie">Všetky realizácie <app-icon name="arrow-right" [size]="16" /></a>
+    </header>
+    @if (referencesRes.isLoading() && !references().length) {
+      <div class="grid-cards">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="skeleton skeleton--card"></div>
+        }
+      </div>
+    } @else if (referencesRes.error()) {
+      <div class="state-box">
+        <h3>Realizácie sa nepodarilo načítať</h3>
+        <button type="button" class="btn btn--secondary" (click)="referencesRes.reload()">Skúsiť znova</button>
+      </div>
+    } @else {
+      <div class="grid-cards">
+        @for (project of references(); track project.id) {
+          <app-reference-card [project]="project" />
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+  <div class="container">
+    <header class="section-header">
+      <span class="eyebrow">Skúsenosti klientov</span>
+      <h2>Čo o nás hovoria klienti</h2>
+    </header>
+    <ul class="testimonials">
+      @for (t of config.testimonials; track t.author) {
+        <li>
+          <figure class="testimonial">
+            <app-icon name="quote" [size]="28" />
+            <blockquote>{{ t.quote }}</blockquote>
+            <figcaption>
+              <strong>{{ t.author }}</strong>
+              <span>{{ t.context }}</span>
+            </figcaption>
+          </figure>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- TEAM -->
+@if (team().length) {
+  <section class="section section--soft">
+    <div class="container">
+      <header class="section-header">
+        <span class="eyebrow">Tím</span>
+        <h2>Certifikovaní elektrotechnici a revízni technici</h2>
+        <p>Za každou zákazkou stoja ľudia s platným osvedčením a rokmi praxe v teréne.</p>
+      </header>
+      <div class="grid-cards">
+        @for (member of team(); track member.id) {
+          <app-team-card [member]="member" />
+        }
+      </div>
+    </div>
+  </section>
+}
+
+<app-cta-band />

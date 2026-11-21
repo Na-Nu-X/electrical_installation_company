@@ -1,0 +1,147 @@
+<section class="page-hero">
+  <div class="container hero-grid">
+    <div>
+      <ol class="breadcrumb">
+        <li><a routerLink="/">Úvod</a></li>
+        <li aria-current="page">Revízie &amp; Normy</li>
+      </ol>
+      <span class="eyebrow">Odborné prehliadky a skúšky · Compliance</span>
+      <h1>Odborné revízie, bleskozvody a platné normy v praxi</h1>
+      <p>
+        Elektrická inštalácia aj bleskozvod sú vyhradené technické zariadenia. Ich bezpečnosť musí pravidelne potvrdiť
+        revízny technik – inak hrozí pokuta, problém s poisťovňou a hlavne riziko úrazu či požiaru.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn--primary btn--lg" routerLink="/dopyt" [queryParams]="{ type: 'revizia' }">
+          Objednať revíziu <app-icon name="arrow-right" [size]="18" />
+        </a>
+        <a class="btn btn--ghost-light btn--lg" href="#lehoty">Lehoty revízií</a>
+      </div>
+    </div>
+    <div class="legal-card">
+      <app-icon name="shield-check" [size]="28" />
+      <strong>{{ config.authorization.authority }}</strong>
+      <p>{{ config.authorization.note }}</p>
+      <span class="mono">{{ config.authorization.licenseNumber }}</span>
+    </div>
+  </div>
+</section>
+
+<!-- Topics -->
+<section class="section">
+  <div class="container">
+    <header class="section-header">
+      <span class="eyebrow">Kedy a prečo</span>
+      <h2>Povinné revízie podľa typu objektu</h2>
+      <p>Prehľad najčastejších situácií, v ktorých potrebujete platnú revíznu správu.</p>
+    </header>
+    <div class="topics">
+      @for (t of topics; track t.title) {
+        <article class="topic">
+          <div class="topic__head">
+            <app-icon [name]="t.icon" [size]="24" />
+            <span class="pill pill--amber">{{ t.interval }}</span>
+          </div>
+          <h3>{{ t.title }}</h3>
+          <p>{{ t.text }}</p>
+          <span class="pill pill--tech">{{ t.norm }}</span>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Interval table -->
+<section class="section section--soft" id="lehoty">
+  <div class="container">
+    <header class="section-header">
+      <span class="eyebrow">Lehoty pravidelných revízií</span>
+      <h2>Tabuľka lehôt odborných prehliadok a skúšok</h2>
+      <p>Orientačné lehoty pravidelných revízií elektrických inštalácií a bleskozvodov podľa prostredia.</p>
+    </header>
+    <div class="table-wrap" role="region" aria-label="Tabuľka lehôt revízií" tabindex="0">
+      <table class="intervals">
+        <thead>
+          <tr>
+            <th scope="col">Typ objektu / priestoru</th>
+            <th scope="col">Prostredie</th>
+            <th scope="col">Elektrická inštalácia</th>
+            <th scope="col">Bleskozvod</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of intervals; track row.object) {
+            <tr>
+              <th scope="row">{{ row.object }}</th>
+              <td>{{ row.environment }}</td>
+              <td class="mono">{{ row.electrical }}</td>
+              <td class="mono">{{ row.lightning }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">
+      <app-icon name="info" [size]="16" />
+      Záväznú lehotu ďalšej revízie určí revízny technik v revíznej správe podľa prílohy č. 8 Vyhlášky č. 508/2009 Z. z.
+      a protokolu o určení vonkajších vplyvov. Mimoriadna revízia je potrebná po každej rekonštrukcii, havárii alebo
+      zásahu bleskom.
+    </p>
+  </div>
+</section>
+
+<!-- Process -->
+<section class="section">
+  <div class="container">
+    <header class="section-header">
+      <span class="eyebrow">Postup</span>
+      <h2>Ako prebieha revízia</h2>
+    </header>
+    <ol class="process">
+      @for (step of process; track step.title; let i = $index) {
+        <li>
+          <span class="process__num mono">0{{ i + 1 }}</span>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.text }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- Services -->
+@if (services().length) {
+  <section class="section section--soft section--tight">
+    <div class="container">
+      <header class="section-header">
+        <span class="eyebrow">Revízne služby</span>
+        <h2>Objednajte si odbornú prehliadku a skúšku</h2>
+      </header>
+      <div class="grid-cards grid-cards--two">
+        @for (s of services(); track s.id) {
+          <app-service-card [service]="s" [scopeLimit]="4" />
+        }
+      </div>
+    </div>
+  </section>
+}
+
+<!-- FAQ -->
+<section class="section">
+  <div class="container faq-grid">
+    <header class="section-header">
+      <span class="eyebrow">Časté otázky</span>
+      <h2>Revízie v otázkach a odpovediach</h2>
+      <p>Nenašli ste odpoveď? Napíšte na <a [href]="'mailto:' + config.contact.inspectionsEmail">{{ config.contact.inspectionsEmail }}</a>.</p>
+    </header>
+    <app-faq-accordion [items]="faq" />
+  </div>
+</section>
+
+<app-cta-band
+  eyebrow="Revízna správa do 5 pracovných dní"
+  title="Potrebujete revíziu elektroinštalácie alebo bleskozvodu?"
+  text="Pre byty, bytové domy, firmy aj kolaudácie. Termín vieme zvyčajne ponúknuť do 7 dní."
+  ctaLabel="Objednať revíziu"
+  [queryParams]="{ type: 'revizia' }"
+/>

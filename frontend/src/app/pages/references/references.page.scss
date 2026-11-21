@@ -1,0 +1,25 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  margin-bottom: $space-8;
+
+  @include up(lg) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__category {
+    @include up(lg) {
+      width: 300px;
+    }
+  }
+}
+
+.skeleton--card {
+  height: 560px;
+}
