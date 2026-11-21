@@ -2,4 +2,6 @@ from django.apps import AppConfig
 
 
 class ElectricalConfig(AppConfig):
-    name = 'electrical'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "electrical"
+    verbose_name = "Elektroinštalácie a revízie"
