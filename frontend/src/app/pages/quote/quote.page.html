@@ -22,7 +22,7 @@
           <h2>Ďakujeme, dopyt sme prijali</h2>
           <p>
             Evidenčné číslo dopytu <strong class="mono">#{{ r.id.toString().padStart(5, '0') }}</strong>.
-            Potvrdenie a ďalší postup pošleme na <strong>{{ r.email }}</strong>.
+            Technik vás bude kontaktovať na <strong>{{ r.email }}</strong> alebo telefonicky.
           </p>
           <dl class="success__summary">
             <div><dt>Požiadavka</dt><dd>{{ labelForType(r.service_type) }}</dd></div>
@@ -35,7 +35,7 @@
             <div class="alert alert--danger">
               <app-icon name="alert" [size]="20" />
               <p>
-                Pri akútnej poruche, zápachu spáleniny alebo iskrení nečakajte na e-mail a volajte poruchovú službu:
+                Pri akútnej poruche, zápachu spáleniny alebo iskrení nečakajte na spätný kontakt a volajte poruchovú službu:
                 <a class="mono" [href]="config.contact.emergencyPhoneHref">{{ config.contact.emergencyPhone }}</a>
               </p>
             </div>

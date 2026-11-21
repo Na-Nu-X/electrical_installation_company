@@ -174,6 +174,9 @@ export class QuotePage {
     }
     if (control.errors) {
       const [key] = Object.keys(control.errors);
+      if (name === 'gdpr_consent' && key === 'required') {
+        return ERROR_MESSAGES['requiredTrue'];
+      }
       const serverMessage = control.errors['server'];
       return typeof serverMessage === 'string' ? serverMessage : (ERROR_MESSAGES[key] ?? 'Neplatná hodnota.');
     }
