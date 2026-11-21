@@ -1,0 +1,167 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+@use 'styles/typography' as type;
+
+:host {
+  display: block;
+}
+
+.footer {
+  background: $color-navy;
+  color: $color-on-navy-muted;
+  padding-top: $space-16;
+  font-size: type.$text-sm;
+  @include blueprint-grid(rgba(148, 163, 184, 0.04), 64px);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $color-on-navy;
+    }
+  }
+
+  &__top {
+    display: grid;
+    gap: $space-10;
+    grid-template-columns: 1fr;
+    padding-bottom: $space-12;
+
+    @include up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include up(lg) {
+      grid-template-columns: 1.3fr 1fr 1fr 1.2fr;
+    }
+  }
+
+  &__brand {
+    p {
+      max-width: 320px;
+      margin: $space-5 0;
+      line-height: 1.6;
+    }
+  }
+
+  &__emergency {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    padding: $space-2 $space-3;
+    border: 1px solid rgba(248, 113, 113, 0.35);
+    border-radius: $radius-sm;
+    color: $color-on-navy !important;
+
+    app-icon {
+      color: #f87171;
+    }
+  }
+
+  &__heading {
+    @include type.eyebrow;
+    margin-bottom: $space-5;
+    font-family: $font-mono;
+    font-size: type.$text-xs;
+    color: $color-on-navy;
+  }
+
+  &__col {
+    font-style: normal;
+
+    ul {
+      display: grid;
+      gap: $space-3;
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: $space-2;
+
+      app-icon {
+        margin-top: 3px;
+        color: $color-primary;
+      }
+    }
+  }
+
+  &__region {
+    margin: $space-5 0 0;
+    line-height: 1.6;
+  }
+
+  &__label {
+    display: block;
+    @include type.eyebrow;
+    font-size: 0.68rem;
+    color: $color-on-navy;
+    margin-bottom: $space-1;
+  }
+
+  &__authorization {
+    display: flex;
+    gap: $space-4;
+    padding: $space-5;
+    border: 1px solid $color-navy-line;
+    border-radius: $radius;
+    background: rgba(5, 150, 105, 0.06);
+
+    app-icon {
+      color: #34d399;
+    }
+
+    strong {
+      display: block;
+      margin-bottom: $space-1;
+      color: $color-on-navy;
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .mono {
+      display: inline-block;
+      color: $color-on-navy;
+      font-size: type.$text-xs;
+    }
+  }
+
+  &__bottom {
+    display: grid;
+    gap: $space-3;
+    padding-block: $space-8;
+    margin-top: $space-8;
+    border-top: 1px solid $color-navy-line;
+    font-size: type.$text-xs;
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+    }
+  }
+
+  &__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2 $space-5;
+    color: $color-on-navy;
+  }
+
+  &__social {
+    display: flex;
+    gap: $space-5;
+    list-style: none;
+    margin-top: $space-2;
+
+    a {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+}

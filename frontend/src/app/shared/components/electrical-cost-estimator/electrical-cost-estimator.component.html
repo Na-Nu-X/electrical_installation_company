@@ -1,0 +1,194 @@
+<div class="estimator">
+  <form class="estimator__config" (submit)="$event.preventDefault()" aria-label="Konfigurácia kalkulačky ceny">
+    <!-- 1. Realization type -->
+    <fieldset class="step">
+      <legend class="step__legend"><span class="step__num">01</span> Typ realizácie</legend>
+      <div class="tiles tiles--two">
+        @for (option of realizationTypes; track option.value) {
+          <label class="tile" [class.is-active]="type() === option.value">
+            <input
+              type="radio"
+              class="visually-hidden"
+              [name]="idPrefix() + '-type'"
+              [value]="option.value"
+              [checked]="type() === option.value"
+              (change)="type.set(option.value)"
+            />
+            <app-icon [name]="option.icon" [size]="22" />
+            <span class="tile__text">
+              <span class="tile__label">{{ option.label }}</span>
+              <span class="tile__hint">{{ option.hint }}</span>
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <!-- 2. Object type -->
+    <fieldset class="step">
+      <legend class="step__legend"><span class="step__num">02</span> Typ objektu</legend>
+      <div class="segmented">
+        @for (option of objectTypes; track option.value) {
+          <label class="segmented__item" [class.is-active]="object() === option.value">
+            <input
+              type="radio"
+              class="visually-hidden"
+              [name]="idPrefix() + '-object'"
+              [value]="option.value"
+              [checked]="object() === option.value"
+              (change)="object.set(option.value)"
+            />
+            <app-icon [name]="option.icon" [size]="18" />
+            {{ option.label }}
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <!-- 3. Area / wallbox parameters (adapts to the realization type) -->
+    <fieldset class="step">
+      @if (!isWallbox()) {
+        <legend class="step__legend"><span class="step__num">03</span> {{ areaLabel() }}</legend>
+        <div class="range">
+          <div class="range__head">
+            <label class="visually-hidden" [for]="idPrefix() + '-area'">{{ areaLabel() }}</label>
+            <output class="range__value" [attr.for]="idPrefix() + '-area'">{{ area() }} <small>m²</small></output>
+            <span class="range__bounds">{{ areaRange.min }} – {{ areaRange.max }} m²</span>
+          </div>
+          <input
+            type="range"
+            class="range__input"
+            [id]="idPrefix() + '-area'"
+            [min]="areaRange.min"
+            [max]="areaRange.max"
+            [step]="areaRange.step"
+            [value]="area()"
+            [style.--fill.%]="areaFill()"
+            (input)="onRange($event.target, 'area')"
+          />
+          @if (isInspection()) {
+            <p class="range__note">
+              <app-icon name="info" [size]="16" /> Pri revízii sa cena odvíja od počtu okruhov a rozvádzačov – plocha slúži
+              ako orientačný údaj.
+            </p>
+          }
+        </div>
+      } @else {
+        <legend class="step__legend"><span class="step__num">03</span> Parametre nabíjacej stanice</legend>
+        <div class="segmented segmented--compact">
+          @for (p of powers; track p) {
+            <label class="segmented__item mono" [class.is-active]="power() === p">
+              <input
+                type="radio"
+                class="visually-hidden"
+                [name]="idPrefix() + '-power'"
+                [value]="p"
+                [checked]="power() === p"
+                (change)="power.set(p)"
+              />
+              {{ p }} kW{{ p === 11 ? ' · 3×16 A' : ' · 3×32 A' }}
+            </label>
+          }
+        </div>
+        <div class="range">
+          <div class="range__head">
+            <label class="range__label" [for]="idPrefix() + '-distance'">Vzdialenosť od rozvádzača</label>
+            <output class="range__value" [attr.for]="idPrefix() + '-distance'">{{ distance() }} <small>m</small></output>
+          </div>
+          <input
+            type="range"
+            class="range__input"
+            [id]="idPrefix() + '-distance'"
+            [min]="distanceRange.min"
+            [max]="distanceRange.max"
+            [step]="distanceRange.step"
+            [value]="distance()"
+            [style.--fill.%]="distanceFill()"
+            (input)="onRange($event.target, 'distance')"
+          />
+        </div>
+      }
+    </fieldset>
+
+    <!-- 4. Add-ons -->
+    <fieldset class="step">
+      <legend class="step__legend"><span class="step__num">04</span> Doplnkové požiadavky</legend>
+      <ul class="toggles">
+        @for (addon of addons; track addon.key) {
+          <li>
+            <label class="toggle" [class.is-on]="isSelected(addon.key)" [class.is-disabled]="!isAvailable(addon.key)">
+              <input
+                type="checkbox"
+                class="visually-hidden"
+                [checked]="isSelected(addon.key)"
+                [disabled]="!isAvailable(addon.key)"
+                (change)="toggleAddon(addon.key)"
+              />
+              <app-icon [name]="addon.icon" [size]="20" />
+              <span class="toggle__text">
+                <span class="toggle__label">{{ labelFor(addon.key) }}</span>
+                <span class="toggle__spec mono">{{ isAvailable(addon.key) ? addon.spec : 'nedostupné pre zvolený typ' }}</span>
+              </span>
+              <span class="toggle__switch" aria-hidden="true"></span>
+            </label>
+          </li>
+        }
+      </ul>
+    </fieldset>
+  </form>
+
+  <!-- Result panel -->
+  <aside class="estimator__result" aria-live="polite" aria-label="Výsledok kalkulácie">
+    <span class="result__eyebrow">Orientačná investícia</span>
+    <p class="result__price">
+      <span>{{ result().priceMin | eur }}</span>
+      <span class="result__dash">–</span>
+      <span>{{ result().priceMax | eur }}</span>
+    </p>
+    <p class="result__vat">vrátane materiálu a DPH · bez projektovej dokumentácie</p>
+
+    <div class="result__meta">
+      <div class="result__meta-item">
+        <app-icon name="clock" [size]="18" />
+        <div>
+          <span class="result__meta-label">Odhad realizácie</span>
+          <strong class="mono">{{ daysLabel(result().daysMin, result().daysMax) }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="result__docs">
+      <span class="result__meta-label">Súčasť dodávky – povinná dokumentácia</span>
+      <ul>
+        @for (doc of result().documents; track doc) {
+          <li><app-icon name="check" [size]="16" /> {{ doc }}</li>
+        }
+      </ul>
+    </div>
+
+    <details class="result__breakdown">
+      <summary>Rozpis položiek <app-icon name="chevron-down" [size]="16" /></summary>
+      <ul>
+        @for (item of result().lineItems; track item.label) {
+          <li>
+            <span>{{ item.label }}</span><span class="mono">{{ item.amount | eur }}</span>
+          </li>
+        }
+      </ul>
+    </details>
+
+    <a class="btn btn--primary btn--lg btn--block" routerLink="/dopyt" [queryParams]="quoteParams()">
+      Získať presnú cenovú ponuku <app-icon name="arrow-right" [size]="18" />
+    </a>
+
+    <ul class="result__badges">
+      @for (badge of badges; track badge.label) {
+        <li><app-icon [name]="badge.icon" [size]="16" /> {{ badge.label }}</li>
+      }
+    </ul>
+    <p class="result__disclaimer">
+      Kalkulácia je orientačná a nenahrádza cenovú ponuku. Presnú cenu stanovíme po bezplatnej obhliadke alebo podľa
+      projektovej dokumentácie.
+    </p>
+  </aside>
+</div>

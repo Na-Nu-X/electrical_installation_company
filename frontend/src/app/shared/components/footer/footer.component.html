@@ -1,0 +1,87 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <app-logo [inverse]="true" />
+        <p>{{ config.company.tagline }}.</p>
+        <a class="footer__emergency" [href]="config.contact.emergencyPhoneHref">
+          <app-icon name="alert" [size]="18" />
+          <span>{{ config.contact.emergencyLabel }}: <strong class="mono">{{ config.contact.emergencyPhone }}</strong></span>
+        </a>
+      </div>
+
+      <nav class="footer__col" aria-label="Služby">
+        <h2 class="footer__heading">Služby</h2>
+        <ul>
+          @for (link of serviceLinks; track link.label) {
+            <li><a [routerLink]="link.path" [queryParams]="link.query">{{ link.label }}</a></li>
+          }
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="Spoločnosť">
+        <h2 class="footer__heading">Spoločnosť</h2>
+        <ul>
+          @for (link of companyLinks; track link.label) {
+            <li><a [routerLink]="link.path" [queryParams]="link.query">{{ link.label }}</a></li>
+          }
+        </ul>
+      </nav>
+
+      <address class="footer__col">
+        <h2 class="footer__heading">Kontakt</h2>
+        <ul>
+          <li>
+            <app-icon name="map-pin" [size]="16" />
+            <a [href]="config.address.mapUrl" target="_blank" rel="noopener">
+              {{ config.address.street }}, {{ config.address.postalCode }} {{ config.address.city }}
+            </a>
+          </li>
+          <li>
+            <app-icon name="phone" [size]="16" />
+            <a class="mono" [href]="config.contact.phoneHref">{{ config.contact.phone }}</a>
+          </li>
+          <li>
+            <app-icon name="mail" [size]="16" />
+            <a [href]="'mailto:' + config.contact.email">{{ config.contact.email }}</a>
+          </li>
+          <li>
+            <app-icon name="clock" [size]="16" />
+            <span>{{ config.contact.openingHours }}</span>
+          </li>
+        </ul>
+        <p class="footer__region">
+          <span class="footer__label">Pôsobnosť</span>
+          {{ config.serviceRegion.primary }}. {{ config.serviceRegion.secondary }}.
+        </p>
+      </address>
+    </div>
+
+    <div class="footer__authorization">
+      <app-icon name="shield-check" [size]="22" />
+      <div>
+        <strong>{{ config.authorization.authority }} · {{ config.authorization.regulation }}</strong>
+        <p>{{ config.authorization.note }} <span class="mono">{{ config.authorization.licenseNumber }}</span></p>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <div class="footer__legal">
+        <span>© {{ year }} {{ config.company.legalName }}</span>
+        <span class="mono">IČO: {{ config.legal.ico }}</span>
+        <span class="mono">DIČ: {{ config.legal.dic }}</span>
+        <span class="mono">IČ DPH: {{ config.legal.icDph }}</span>
+      </div>
+      <p class="footer__registry">{{ config.legal.registry }}</p>
+      <p class="footer__gdpr">
+        Osobné údaje odoslané cez formuláre spracúvame v súlade s nariadením GDPR (EÚ) 2016/679 a zákonom
+        č. 18/2018 Z. z. o ochrane osobných údajov výlučne na účel vybavenia vášho dopytu.
+      </p>
+      <ul class="footer__social">
+        @for (s of config.social; track s.label) {
+          <li><a [href]="s.url" target="_blank" rel="noopener">{{ s.label }}</a></li>
+        }
+      </ul>
+    </div>
+  </div>
+</footer>

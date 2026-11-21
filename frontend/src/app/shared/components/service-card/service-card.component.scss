@@ -1,0 +1,123 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+@use 'styles/typography' as type;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.card {
+  @include panel($space-6);
+  @include hover-lift;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &:hover .card__title a {
+    color: $color-primary-hover;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    margin-bottom: $space-4;
+  }
+
+  &__category {
+    @include type.eyebrow;
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-size: 0.68rem;
+    color: $color-tech;
+    letter-spacing: 0.05em;
+  }
+
+  &__title {
+    font-size: type.$text-xl;
+    line-height: 1.3;
+    margin-bottom: $space-3;
+
+    a {
+      color: $color-text;
+      text-decoration: none;
+      transition: color $transition-fast;
+
+      // Stretch link over the whole card for a generous click target.
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: $radius;
+      }
+    }
+  }
+
+  &__desc {
+    @include line-clamp(3);
+    font-size: type.$text-sm;
+    color: $color-text-muted;
+    margin-bottom: $space-5;
+  }
+
+  &__scope {
+    display: grid;
+    gap: $space-2;
+    margin-bottom: $space-5;
+    padding-top: $space-4;
+    border-top: 1px dashed $color-border;
+    list-style: none;
+
+    li {
+      display: flex;
+      gap: $space-2;
+      font-size: type.$text-sm;
+      line-height: 1.45;
+      color: $color-text;
+
+      app-icon {
+        margin-top: 2px;
+        color: $color-safe;
+      }
+    }
+  }
+
+  &__standards {
+    margin-bottom: $space-6;
+  }
+
+  &__foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $space-4;
+    margin-top: auto;
+    padding-top: $space-4;
+    border-top: 1px solid $color-border;
+
+    .link-arrow {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  &__price {
+    display: flex;
+    flex-direction: column;
+
+    strong {
+      font-size: type.$text-lg;
+      font-weight: 600;
+      color: $color-text;
+    }
+  }
+
+  &__price-label {
+    font-size: type.$text-xs;
+    color: $color-text-subtle;
+  }
+}

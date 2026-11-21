@@ -1,0 +1,124 @@
+@use 'styles/variables' as *;
+@use 'styles/mixins' as *;
+@use 'styles/typography' as type;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.ref {
+  @include panel(0);
+  @include hover-lift;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: $color-surface-soft;
+    border-bottom: 1px solid $color-border;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 600ms $ease;
+    }
+  }
+
+  &:hover &__media img {
+    transform: scale(1.03);
+  }
+
+  &__year {
+    position: absolute;
+    top: $space-3;
+    left: $space-3;
+    padding: 2px $space-2;
+    border-radius: $radius-sm;
+    background: rgba(11, 19, 36, 0.82);
+    color: $color-on-navy;
+    font-size: type.$text-xs;
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: $space-5 $space-6 $space-6;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-3;
+    margin-bottom: $space-3;
+  }
+
+  &__location {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-1;
+    font-size: type.$text-xs;
+    color: $color-text-muted;
+  }
+
+  &__title {
+    font-size: type.$text-lg;
+    line-height: 1.35;
+    margin-bottom: $space-3;
+  }
+
+  &__summary {
+    @include line-clamp(3);
+    font-size: type.$text-sm;
+    color: $color-text-muted;
+  }
+
+  &__story {
+    display: grid;
+    gap: $space-3;
+    margin: 0 0 $space-4;
+
+    dt {
+      @include type.eyebrow;
+      font-size: 0.66rem;
+      color: $color-tech;
+      margin-bottom: 2px;
+    }
+
+    dd {
+      margin: 0;
+      font-size: type.$text-sm;
+      color: $color-text-muted;
+      line-height: 1.55;
+    }
+  }
+
+  &__highlights {
+    display: grid;
+    gap: $space-2;
+    margin-top: auto;
+    padding-top: $space-4;
+    border-top: 1px dashed $color-border;
+    list-style: none;
+
+    li {
+      @include mono-numeric;
+      display: flex;
+      gap: $space-2;
+      font-size: 0.75rem;
+      color: $color-text;
+
+      app-icon {
+        margin-top: 2px;
+        color: $color-safe;
+      }
+    }
+  }
+}
